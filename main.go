@@ -12,7 +12,7 @@ func main() {
 		coin.Coin{coin.H, coin.T},
 		coin.Coin{coin.T, coin.T},
 		coin.Coin{coin.T, coin.T}}
-	p.Add(coins)
+	p.AddAll(coins)
 	c := p.PickRandom()
 	fmt.Println(c)
 	fmt.Println(p.CountCoins())

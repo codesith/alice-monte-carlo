@@ -12,11 +12,21 @@ type Pocket struct {
 	coins list.List
 }
 
-// Add coins into a pocket
-func (p *Pocket) Add(coins []coin.Coin) {
+// AddAll coins into a pocket
+func (p *Pocket) AddAll(coins []coin.Coin) {
 	for _, c := range coins {
 		p.coins.PushBack(c)
 	}
+}
+
+// Add a coin into a pocket
+func (p *Pocket) Add(c coin.Coin) {
+	p.coins.PushBack(c)
+}
+
+// Remove all coin
+func (p *Pocket) RemoveAll() {
+	p.coins.Init()
 }
 
 var random = rand.New(rand.NewSource(time.Now().UnixNano()))
