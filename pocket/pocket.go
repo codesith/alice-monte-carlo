@@ -4,7 +4,6 @@ import (
 	"alice/coin"
 	"container/list"
 	"math/rand"
-	"time"
 )
 
 // Pocket a container or coins
@@ -29,11 +28,11 @@ func (p *Pocket) RemoveAll() {
 	p.coins.Init()
 }
 
-var random = rand.New(rand.NewSource(time.Now().UnixNano()))
+//var random = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 // PickRandom randomly pick up a coin
 func (p *Pocket) PickRandom() (c coin.Coin) {
-	index := random.Intn(p.coins.Len())
+	index := rand.Intn(p.coins.Len())
 	i := 0
 	for e := p.coins.Front(); e != nil; e = e.Next() {
 		if i == index {

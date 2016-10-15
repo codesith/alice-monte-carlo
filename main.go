@@ -4,10 +4,10 @@ import (
 	"alice/coin"
 	"alice/pocket"
 	"fmt"
+	"time"
 )
 
 func main() {
-	p := new(pocket.Pocket)
 	coins := []coin.Coin{
 		coin.Coin{coin.H, coin.T},
 		coin.Coin{coin.H, coin.T},
@@ -16,30 +16,44 @@ func main() {
 		coin.Coin{coin.T, coin.T}}
 
 	trials := 1000000000
+	routineCount := 10
 	overall := 0
 	success := 0
+	var o chan int = make(chan int, routineCount)
+	var s chan int = make(chan int, routineCount)
+	subtrials := trials / routineCount
+	start := time.Now()
+	for i := 0; i < routineCount; i++ {
+		go trial(coins, subtrials, o, s)
+		fmt.Printf("Start routine %d\n", i)
+	}
+	for i := 0; i < routineCount; i++ {
+		overall = overall + <-o
+		success = success + <-s
+	}
+	elapsed := time.Since(start)
+	fmt.Printf("\rFinal result is %.2f%%\n", float64(success)/float64(overall)*100)
+	fmt.Printf("Processing time is %s\n", elapsed)
+}
+
+func trial(coins []coin.Coin, trials int, overall chan int, success chan int) {
+	o := 0
+	s := 0
 	for i := 0; i < trials; i++ {
+		p := new(pocket.Pocket)
 		p.AddAll(coins)
 		// draw a single coin
 		c := p.PickRandom()
 		// toss it
 		if c.Toss() == coin.H {
-			overall++
+			o++
 			// draw another coin
 			c = p.PickRandom()
 			if c.Toss() == coin.H {
-				success++
+				s++
 			}
 		}
-		p.RemoveAll()
-		printProgress(trials, i)
 	}
-	fmt.Printf("\rFinal result is %.2f%%\n", float64(success)/float64(overall)*100)
-}
-
-func printProgress(trials int, i int) {
-	bucketSize := trials / 20
-	if i%bucketSize == 0 {
-		fmt.Printf("\r%d%%", (i/bucketSize+1)*5)
-	}
+	overall <- o
+	success <- s
 }

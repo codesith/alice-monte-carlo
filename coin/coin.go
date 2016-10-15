@@ -1,9 +1,6 @@
 package coin
 
-import (
-	"math/rand"
-	"time"
-)
+import "math/rand"
 
 // Face a string type
 type Face string
@@ -20,11 +17,11 @@ type Coin struct {
 	Bottom Face
 }
 
-var random = rand.New(rand.NewSource(time.Now().UnixNano()))
+//var random = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 // Toss flip coin and return top side
 func (c *Coin) Toss() Face {
-	r := random.Intn(2)
+	r := rand.Intn(2)
 	if r == 1 {
 		t := c.Top
 		c.Top = c.Bottom
